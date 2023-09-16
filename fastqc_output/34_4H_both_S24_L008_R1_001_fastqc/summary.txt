@@ -1,0 +1,11 @@
+PASS	Basic Statistics	34_4H_both_S24_L008_R1_001.fastq.gz
+PASS	Per base sequence quality	34_4H_both_S24_L008_R1_001.fastq.gz
+FAIL	Per tile sequence quality	34_4H_both_S24_L008_R1_001.fastq.gz
+PASS	Per sequence quality scores	34_4H_both_S24_L008_R1_001.fastq.gz
+FAIL	Per base sequence content	34_4H_both_S24_L008_R1_001.fastq.gz
+PASS	Per sequence GC content	34_4H_both_S24_L008_R1_001.fastq.gz
+PASS	Per base N content	34_4H_both_S24_L008_R1_001.fastq.gz
+PASS	Sequence Length Distribution	34_4H_both_S24_L008_R1_001.fastq.gz
+WARN	Sequence Duplication Levels	34_4H_both_S24_L008_R1_001.fastq.gz
+WARN	Overrepresented sequences	34_4H_both_S24_L008_R1_001.fastq.gz
+PASS	Adapter Content	34_4H_both_S24_L008_R1_001.fastq.gz

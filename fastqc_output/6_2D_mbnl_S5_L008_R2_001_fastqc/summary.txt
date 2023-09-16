@@ -1,0 +1,11 @@
+PASS	Basic Statistics	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+PASS	Per base sequence quality	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+WARN	Per tile sequence quality	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+PASS	Per sequence quality scores	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+WARN	Per base sequence content	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+PASS	Per sequence GC content	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+PASS	Per base N content	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+PASS	Sequence Length Distribution	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+WARN	Sequence Duplication Levels	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+WARN	Overrepresented sequences	6_2D_mbnl_S5_L008_R2_001.fastq.gz
+PASS	Adapter Content	6_2D_mbnl_S5_L008_R2_001.fastq.gz

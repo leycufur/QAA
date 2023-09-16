@@ -1,0 +1,298 @@
+---
+title: "RNA-seq Quality Assessment"
+author: "Leyla Cufurovic"
+date: "2023-09-14"
+output: pdf_document
+---
+
+```{r include=FALSE}
+library(knitr)
+library(tinytex)
+library(tibble)
+library(kableExtra)
+```
+
+
+**The purpose of this report is to use existing tools for quality assessment and adaptor trimming, compare the quality assessments to those from my own software, and to demonstrate my ability to summarize other important information about this RNA-Seq data set in a high-level report.**
+
+*The data used for this report can be found here:*
+
+*/projects/bgmp/shared/2017_sequencing/demultiplexed/34_4H_both_S24_L008_R1_001.fastq.gz*
+*/projects/bgmp/shared/2017_sequencing/demultiplexed/34_4H_both_S24_L008_R2_001.fastq.gz*
+*/projects/bgmp/shared/2017_sequencing/demultiplexed/6_2D_mbnl_S5_L008_R1_001.fastq.gz*
+*/projects/bgmp/shared/2017_sequencing/demultiplexed/6_2D_mbnl_S5_L008_R2_001.fastq.gz*
+
+
+```{r include=FALSE}
+# My outputs from python script:
+
+myoutput_pbqs_both_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/qscores_both_R1_plotting_output.png"
+myoutput_pbqs_both_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/qscores_both_R2_plotting_output.png"
+myoutput_pbqs_mbnl_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/qscores_mbnl_R1_plotting_output.png"
+myoutput_pbqs_mbnl_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/qscores_mbnl_R2_plotting_output.png"
+
+#FastQC outputs
+
+fastqc_pbqs_both_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/34_4H_both_S24_L008_R1_001.png"
+fastqc_pbqs_both_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/34_4H_both_S24_L008_R2_001.png"
+fastqc_pbqs_mbnl_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/6_2D_mbnl_S5_L008_R1_001.png"
+fastqc_pbqs_mbnl_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/6_2D_mbnl_S5_L008_R2_001.png"
+
+# GC Content
+gc_both_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/34_4H_both_S24_L008_R1_001_fastqc/Images/per_sequence_gc_content.png"
+gc_both_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/34_4H_both_S24_L008_R2_001_fastqc/Images/per_sequence_gc_content.png"
+gc_mbnl_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/6_2D_mbnl_S5_L008_R1_001_fastqc/Images/per_sequence_gc_content.png"
+gc_mbnl_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/6_2D_mbnl_S5_L008_R1_001_fastqc/Images/per_sequence_gc_content.png"
+
+# per base N content
+pbN_both_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/34_4H_both_S24_L008_R1_001_fastqc/Images/per_base_n_content.png"
+pbN_both_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/34_4H_both_S24_L008_R2_001_fastqc/Images/per_base_n_content.png"
+pbN_mbnl_R1 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/6_2D_mbnl_S5_L008_R1_001_fastqc/Images/per_base_n_content.png"
+pbN_mbnl_R2 = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/fastqc_output/6_2D_mbnl_S5_L008_R2_001_fastqc/Images/per_base_n_content.png"
+
+```
+
+# Part 1: Read quality score distributions
+
+## 1.1 Per base quality score: python plots
+
+```{r, echo=FALSE,out.width="50%", fig.show='hold'}
+include_graphics(c(myoutput_pbqs_both_R1, myoutput_pbqs_both_R2))
+```
+34_4H_both_S24 per base mean quality score python plots. Distribution of average quality scores per sequence plots generated with python script.
+
+```{r, echo=FALSE,out.width="50%", fig.show='hold'}
+include_graphics(c(myoutput_pbqs_mbnl_R1, myoutput_pbqs_mbnl_R2))
+```
+6_2D_mbnl_S5 per base mean quality score python plots. Distribution of average quality scores per sequence plots generated with python. Left: R1; Right: R2.
+
+
+## 1.1 Per base quality score: FastQC plots
+
+```{r, echo=FALSE,out.width="50%", fig.show='hold'}
+
+include_graphics(c(fastqc_pbqs_both_R1, fastqc_pbqs_both_R2))
+```
+34_4H_both_S24 mean per base quality score FastQC plots. Distribution of average quality scores per sequence plots generated with FastQC. Left: R1; Right: R2.
+
+```{r, echo=FALSE,out.width="50%",fig.show='hold'}
+include_graphics(c(fastqc_pbqs_mbnl_R1, fastqc_pbqs_mbnl_R2))
+```
+6_2D_mbnl_S5 per base mean quality score FastQC plots. Left: R1; Right: R2.
+
+## 1.2 GC Content
+
+```{r, echo=FALSE,out.width="50%", fig.show='hold'}
+include_graphics(c(gc_both_R1, gc_both_R2))
+```
+34_4H_both_S24 per sequence gc content for R1 (left) and R2 (right)
+ 
+```{r, echo=FALSE,out.width="50%",fig.show='hold'}
+include_graphics(c(gc_mbnl_R1, gc_mbnl_R2))
+```
+6_2D_mbnl_S5 per sequence gc content for R1 (left) and R2 (right)
+
+## 1.3 Per base N content
+
+```{r, echo=FALSE,out.width="50%", fig.show='hold'}
+include_graphics(c(pbN_both_R1, pbN_both_R2))
+```
+34_4H_both_S24 per base N content for R1 (left) and R2 (right).
+
+```{r, echo=FALSE,out.width="50%",fig.show='hold'}
+include_graphics(c(pbN_mbnl_R1, pbN_mbnl_R2))
+```
+6_2D_mbnl_S per base N content for R1 (left) and R2 (right)
+
+
+### 1.4 FastQC vs Python script
+
+```{r echo=FALSE}
+
+libs = c("R1 both", "R2 both", "R1 mbnl", "R2 mbnl")
+fastqc = c("0:53.49", "0:56.25", " 1:00.63", " 1:00.72")
+python = c("11:33.67", "11:34.58","12:49.02", "11:52.32")
+
+fq_python_table = tibble(`Library` = libs, `FastQC times (m:s.ms)` = fastqc, `Python times (m:s.ms)` = python)
+knitr::kable(fq_python_table, "pipe")
+```
+FastQC was able to run significantly faster than my python script. One reason might be because FastQC is optimized to be faster.
+
+
+## Discussion of plots:
+The per base sequence quality plots indicate that the data all have relatively high quality scores. While there is a lower quality score in the first several bases (although the lowest qscore is about 31, which is still a high score), the majority of the data has a quality score of about 40. It's important to note that while lower quality scores in the initial base positions are common, they don't necessarily indicate low data quality overall. The plots from the FastQC outputs as well as the plots generated from my python script followed the same trend lines for each plot, indicating that the quality scores are accurate.
+
+Additionally, the Fastqc output GC content plots that show that the GC content of the libraries is around 50%. Eukaryotic genomes tend to have a more moderate GC content, often falling in the range of 30% to 65%, but a range of 50 to 55 percent is ideal. An unusually shaped distribution could indicate a contaminated library or some other kinds of biased subset. A normal distribution which is shifted indicates some systematic bias which is independent of base position. If there is a systematic bias which creates a shifted normal distribution then this won't be flagged as an error by the module since it doesn't know what your genome's GC content should be. In this case, the plots generally follow a normal distribution.
+
+The per base N content of the libraries is generally around 0, except for a small increase around the first few bases. This is to be expected because the ends of the extracted RNA are prone to degradation. Overall, the N content stays at 0 and indicates that every base position had a base call.
+
+Overall, I would suggest that the data is of high enough quality to use for further downstream analysis. 
+
+# Part 2: Adaptor trimming comparison
+
+### 2.1 Adapter and quality trimming
+
+
+**Adapter sequences:**
+
+```
+R1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCA
+R2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
+```
+
+
+**Command to search for adapter sequence in dataset:**
+
+
+```
+R1 34_4H_both_S24 count: 138880
+zcat /projects/bgmp/shared/2017_sequencing/demultiplexed/34_4H_both_S24_L008_R1_001.fastq.gz | 
+grep "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA" | wc -l
+
+
+R2 34_4H_both_S24 count: 137879
+zcat /projects/bgmp/shared/2017_sequencing/demultiplexed/34_4H_both_S24_L008_R2_001.fastq.gz |
+grep "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT" | wc -l
+
+
+R1 6_2D_mbnl_S5 count: 12870
+zcat /projects/bgmp/shared/2017_sequencing/demultiplexed/6_2D_mbnl_S5_L008_R1_001.fastq.gz | 
+grep "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA" | wc -l
+
+
+R2 6_2D_mbnl_S5 count: 13562
+zcat /projects/bgmp/shared/2017_sequencing/demultiplexed/6_2D_mbnl_S5_L008_R2_001.fastq.gz | 
+grep "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT" | wc -l
+
+```
+
+
+
+**Cutadapt output**
+
+```{r echo=FALSE}
+libs = c("34_4H_both_S24", "6_2D_mbnl_S5")
+total_reads = c(9040597,  11028244)
+r1 = c(819166,  416045)
+pct1 = c("9.1%", "3.8%")
+r2 = c(886595, 502045)
+pct2 = c("9.8%", "4.6%")
+cutadapt_table = tibble(`Library` = libs, `Read-pairs` = total_reads, `Read 1 Trimmed` = r1, `% Read 1 Trimmed` = pct1, `# Read 2 Trimmed` = r2, `% Read 2 Trimmed` = pct2)
+
+knitr::kable(cutadapt_table, "pipe")  
+```
+
+
+**Trimmomatic output**
+
+```{r echo=FALSE}
+
+libs = c("34_4H_both_S24", "6_2D_mbnl_S5")
+input_rp = c(9040597, 11028244)
+surviving = c(8671861, 10463870)
+surviving_pct = c("95.92%", "94.88%")
+fwd_surviving = c(358895, 552811)
+fwd_surviving_pct = c("3.97%", "5.01%")
+rvs_surviving = c(6708, 7479)
+rvs_surviving_pct = c("0.07%", "0.07%")
+dropped = c(3133, 4084)
+dropped_pct = c("0.03%", "0.04%")
+
+trimm_table = tibble(`Library` = libs, `Total Surviving` = surviving, `% Total surviving` = surviving_pct, `Total dropped` = dropped, `% Total dropped` = dropped_pct)
+
+knitr::kable(trimm_table, "pipe")  
+```
+**Trimmomatic version: 0.39**
+
+**cutadapt version: 4.4**
+
+In this section, Cutadapt was performed to remove adapter sequences and Trimmomatic was used to quality trim the data. Cutadapt trimmed 9.1% and 9.8% for read 1 and read 2, respectively, for the 34_4H_both_S24 library; 3.8% and 4.6% of reads were trimmed for read 1 and read 2, respectively, for the 6_2D_mbnl_S5 library.
+The trimmomatic plots show that the reverse reads have consistently lower read lengths than read 1. This can be attributed to sample degradation due to the wait time on the sequencer for read 2 to be processed. 
+
+
+
+```{r include=FALSE}
+trimmed_both_plot = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/pt2_plot.png"
+trimmed_mbnl_plot = "/Users/leycufur/bioinfo/Bi623/QAA_outputs_scp/read_len_dist_mbnl.png"
+```
+
+```{r, echo=FALSE,out.width="50%", fig.cap="Trimmed read length distributions for both R1 (left) and R2 reads (right)", fig.show='hold'}
+include_graphics(c(trimmed_mbnl_plot, trimmed_both_plot))
+```
+
+
+
+
+# Part 3 Alignment and strand-specificity
+
+```
+STAR version 2.7.10b
+htSeq version 2.0.3
+matplotlib version 3.7.2
+numpy version 1.25.2
+```
+
+```
+Fasta file used for STAR:     Mus_musculus.GRCm39.dna.primary_assembly.fa (Ensemble release 110)
+  GTF file used for STAR:     Mus_musculus.GRCm39.110.gtf (Ensemble release 110)
+```
+
+## 3.1 STAR results: mapped vs unmapped reads
+
+```{r echo=FALSE}
+libs = c("34_4H_both_S24", "6_2D_mbnl_S5")
+mapped = c(16213347, 1130375)
+unmapped = c(20049202, 878538)
+star_table = tibble(`Sample` = libs,` Mapped Reads` = mapped, `Unmapped Reads` = unmapped)
+knitr::kable(star_table, "pipe")  
+
+```
+
+## 3.2 htSeq results: stranded vs unstranded
+
+**Sbatch script for running htSeq**
+
+conda activate bgmp-QAA
+/usr/bin/time -v htseq-count \
+    --stranded=reverse \
+    /projects/bgmp/leylacuf/bioinfo/Bi623/QAA/mus_musc_files/STAR_output/both_trimmed_Aligned.out.sam \
+    /projects/bgmp/leylacuf/bioinfo/Bi623/QAA/mus_musc_files/Mus_musculus.GRCm39.110.gtf > htseq_both_reverse.txt
+
+
+conda activate bgmp-QAA
+/usr/bin/time -v htseq-count \
+    --stranded=yes \
+    /projects/bgmp/leylacuf/bioinfo/Bi623/QAA/mus_musc_files/STAR_output/both_trimmed_Aligned.out.sam \
+    /projects/bgmp/leylacuf/bioinfo/Bi623/QAA/mus_musc_files/Mus_musculus.GRCm39.110.gtf > htseq_both_reverse.txt
+
+
+**Commands for parsing htseq outputs**
+```
+cat htseq_both_reverse.txt | grep -v "^__" | awk '{sum+=$2} END {print sum}'
+cat htseq_both_stranded.txt | grep -v "^__" | awk '{sum+=$2} END {print sum}'
+
+cat htseq_mbnl_reverse.txt | grep -v "^__" | awk '{sum+=$2} END {print sum}'
+cat htseq_mbnl_stranded.txt | grep -v "^__" | awk '{sum+=$2} END {print sum}'
+
+```
+
+```{r echo=FALSE}
+libs = c("34_4H_both_S24", "6_2D_mbnl_S5")
+total_reads = c("8671861", "10463870")
+stranded = c(432793, 382583)
+reverse = c(6986953, 8553965)
+pcts_stranded = c("4.99%", "3.66%")
+pcts_revs = c("80.57%", "81.74%")
+star_table_stranded = tibble(`Library` = libs,`Total Reads` = total_reads, `Stranded Reads` = stranded,`% Stranded Reads` = pcts_stranded)
+star_table_rvs = tibble(`Library` = libs, `Total Reads` = total_reads, `Reverse Reads` = reverse, `% Reverse Reads` = pcts_revs)
+knitr::kable(star_table_stranded, "pipe")  
+knitr::kable(star_table_rvs, "pipe")  
+
+```
+Strand-Specific Reads: A significant proportion of reads in both libraries correspond to strand-specific alignments. For the "34_4H_both_S24" library, approximately 4.99% of the reads are stranded, while for the "6_2D_mbnl_S5" library, about 3.66% of the reads are stranded.
+
+Reverse Reads: The majority of reads in both libraries align in the reverse orientation. Approximately 80.57% of the reads in the "34_4H_both_S24" library and 81.74% of the reads in the "6_2D_mbnl_S5" library align in the reverse direction.
+
+These quantitative statements suggest that a substantial portion of the reads in the RNA-Seq data corresponds to strand-specific alignments, indicating that the data are derived from strand-specific RNA-Seq libraries. The high percentage of reverse reads further supports that the majority of alignments are on the reverse strand.
+
+
